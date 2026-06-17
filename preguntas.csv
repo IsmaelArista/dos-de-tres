@@ -1,0 +1,75 @@
+materia,tema,enunciado,opcion_a,opcion_b,opcion_c,opcion_d,respuesta_correcta,dificultad,explicacion
+Matemáticas,Álgebra,¿Cuál es el resultado de resolver la ecuación 2x + 5 = 17?,x = 4,x = 6,x = 8,x = 12,B,Baja,Restamos 5 de ambos lados: 2x = 12; luego dividimos entre 2: x = 6.
+Matemáticas,Álgebra,Factoriza la expresión x² - 9,(x-3)(x-3),(x+3)(x+3),(x-3)(x+3),(x+9)(x-1),C,Media,"Es una diferencia de cuadrados: a² - b² = (a-b)(a+b), con a=x y b=3."
+Matemáticas,Álgebra,¿Cuál es la solución de x² - 5x + 6 = 0?,x = 1 o x = 6,x = 2 o x = 3,x = -2 o x = -3,x = 0 o x = 5,B,Media,"Factorizando: (x-2)(x-3)=0, por lo tanto x=2 o x=3."
+Matemáticas,Geometría,¿Cuál es el área de un triángulo con base 8 cm y altura 5 cm?,13 cm²,20 cm²,40 cm²,80 cm²,B,Baja,Área = (base × altura) / 2 = (8 × 5) / 2 = 20 cm².
+Matemáticas,Geometría,¿Cuál es el perímetro de un círculo con radio 7 cm? Use π ≈ 3.14,21.98 cm,43.96 cm,153.86 cm,49 cm,B,Media,Perímetro = 2πr = 2 × 3.14 × 7 = 43.96 cm.
+Matemáticas,Geometría,¿Cuántos grados suman los ángulos internos de un triángulo?,90°,180°,270°,360°,B,Baja,La suma de los ángulos internos de cualquier triángulo siempre es 180°.
+Matemáticas,Aritmética,¿Cuál es el resultado de 15% de 240?,24,36,48,60,B,Baja,15% de 240 = 0.15 × 240 = 36.
+Matemáticas,Aritmética,¿Cuál es el MCM (mínimo común múltiplo) de 12 y 18?,6,24,36,72,C,Media,Descomponiendo: 12 = 2²×3 y 18 = 2×3². MCM = 2²×3² = 36.
+Matemáticas,Aritmética,¿Cuánto es 2/3 + 1/4?,3/7,5/12,11/12,8/12,C,Media,Común denominador 12: 8/12 + 3/12 = 11/12.
+Matemáticas,Trigonometría,¿Cuál es el valor de sen(30°)?,0,1/2,√2/2,√3/2,B,Media,sen(30°) = 1/2 es un valor de la tabla básica de trigonometría.
+Matemáticas,Trigonometría,¿Cuál es el valor de cos(60°)?,0,1/2,√2/2,1,B,Media,cos(60°) = 1/2 es un valor de la tabla básica de trigonometría.
+Matemáticas,Cálculo,¿Cuál es la derivada de f(x) = 3x²?,3x,6x,6,3x³/3,B,Media,Aplicando la regla de la potencia: f'(x) = 2·3x^(2-1) = 6x.
+Matemáticas,Cálculo,¿Cuál es la integral de f(x) = 2x?,x² + C,2x² + C,x²/2 + C,2,A,Media,∫2x dx = 2·(x²/2) + C = x² + C.
+Programación,Variables,¿Cuál es el tipo de dato más adecuado para almacenar el nombre de una persona en Python?,int,float,str,bool,C,Baja,str (string) se usa para almacenar cadenas de texto como nombres.
+Programación,Variables,"Si x = 5 y y = 2, ¿qué imprime print(x // y) en Python?",2.5,2,3,2.0,B,Baja,El operador // realiza división entera; 5 dividido entre 2 da 2 (descartando el resto).
+Programación,Condicionales,"Si x = 10, ¿qué imprime: if x > 5: print('A') else: print('B')?",A,B,AB,Error,A,Baja,"Como 10 > 5 es True, se ejecuta el bloque if e imprime 'A'."
+Programación,Condicionales,¿Cuál es el operador lógico AND en Python?,&&,and,&,AND,B,Baja,En Python el operador lógico AND se escribe con la palabra reservada 'and'.
+Programación,Ciclos,¿Cuántas veces se ejecuta el ciclo for i in range(5)?,4,5,6,Infinitas,B,Baja,"range(5) genera los valores 0, 1, 2, 3, 4: en total 5 iteraciones."
+Programación,Ciclos,"¿Qué valores genera range(1,4) en Python?","1, 2, 3","0, 1, 2, 3","1, 2, 3, 4","1, 2",A,Media,"range(1,4) genera 1, 2, 3 (el límite superior es exclusivo)."
+Programación,Funciones,¿Cómo se define una función en Python?,function f():,def f():,func f():,define f():,B,Baja,En Python las funciones se definen con la palabra reservada 'def'.
+Programación,Funciones,"Si def suma(a,b): return a+b ¿qué retorna suma(3,4)?",7,34,12,None,A,Baja,La función suma 3 + 4 y retorna 7.
+Programación,Estructuras de datos,¿Cuál estructura de datos permite acceder a valores mediante claves?,Lista,Tupla,Diccionario,Conjunto,C,Media,Los diccionarios (dict) almacenan pares clave-valor y permiten acceso por clave.
+Programación,Estructuras de datos,"Si lst = [1, 2, 3], ¿qué imprime print(lst[-1])?",1,2,3,Error,C,Media,El índice -1 accede al último elemento de la lista.
+Programación,POO,¿Cuál es la palabra clave para definir una clase en Python?,class,Class,struct,object,A,Baja,En Python las clases se definen con la palabra reservada 'class'.
+Bases de Datos,SQL Básico,¿Qué comando SQL se usa para obtener datos de una tabla?,GET,FETCH,SELECT,RETRIEVE,C,Baja,SELECT es el comando estándar para consultar datos en SQL.
+Bases de Datos,SQL Básico,¿Cómo se obtienen todos los registros de la tabla 'usuarios'?,GET * FROM usuarios,SELECT ALL usuarios,SELECT * FROM usuarios,FETCH usuarios,C,Baja,La sintaxis correcta es: SELECT * FROM usuarios.
+Bases de Datos,SQL Intermedio,¿Qué cláusula se usa para filtrar resultados en SQL?,FILTER,WHERE,IF,HAVING,B,Media,WHERE filtra filas antes de agruparse; HAVING filtra después de GROUP BY.
+Bases de Datos,SQL Intermedio,¿Qué tipo de JOIN devuelve todas las filas de la tabla izquierda?,INNER JOIN,LEFT JOIN,RIGHT JOIN,FULL JOIN,B,Media,LEFT JOIN devuelve todas las filas de la tabla izquierda con NULL si no hay coincidencias.
+Bases de Datos,Normalización,¿Cuál es el objetivo principal de la normalización?,Aumentar velocidad,Eliminar redundancia,Reducir tablas,Cifrar datos,B,Alta,La normalización busca eliminar redundancia y dependencias mal estructuradas.
+Bases de Datos,Modelo Relacional,¿Qué es una llave primaria?,Una columna cualquiera,Identificador único de cada fila,La primera columna,Una llave externa,B,Media,La llave primaria identifica de manera única cada registro de una tabla.
+Lectura,Comprensión,"En la oración 'María corrió rápidamente al supermercado', ¿quién es el sujeto?",corrió,rápidamente,María,supermercado,C,Baja,"El sujeto es quien realiza la acción del verbo: en este caso, María."
+Lectura,Comprensión,¿Cuál es la idea principal de un párrafo?,La primera oración,La oración con más palabras,La idea central que se desarrolla,La última oración,C,Media,"La idea principal es el concepto central, no necesariamente la primera oración."
+Lectura,Gramática,¿Qué tipo de palabra es 'rápidamente'?,Sustantivo,Adjetivo,Adverbio,Verbo,C,Baja,"Los adverbios modifican verbos y muchos terminan en -mente, como 'rápidamente'."
+Lectura,Gramática,¿Cuál es el plural correcto de 'lápiz'?,lápizs,lápizes,lápices,lápics,C,Baja,Las palabras terminadas en 'z' cambian a 'c' antes de añadir 'es': lápiz → lápices.
+Lectura,Ortografía,¿Cuál palabra está correctamente escrita como verbo auxiliar?,haver,haber,aber,a ver,B,Baja,'Haber' es el infinitivo del verbo auxiliar; 'a ver' es una locución diferente.
+Lectura,Ortografía,¿Cuál palabra lleva tilde?,examen,exámenes,casa,libro,B,Media,'Exámenes' es esdrújula y todas las esdrújulas llevan tilde.
+Lectura,Vocabulario,¿Cuál es un sinónimo de 'efímero'?,Eterno,Pasajero,Lento,Grande,B,Media,"'Efímero' significa que dura poco tiempo, sinónimo de 'pasajero'."
+Lectura,Vocabulario,¿Cuál es el antónimo de 'taciturno'?,Silencioso,Triste,Locuaz,Distraído,C,Alta,'Taciturno' significa callado; su antónimo es 'locuaz' (que habla mucho).
+Lectura,Literatura,¿Qué figura literaria es 'sus ojos son dos luceros'?,Símil,Metáfora,Hipérbole,Personificación,B,Media,La metáfora identifica un elemento con otro sin usar 'como'; los ojos SON luceros.
+Lectura,Literatura,¿Quién escribió 'Cien años de soledad'?,Mario Vargas Llosa,Gabriel García Márquez,Octavio Paz,Pablo Neruda,B,Baja,'Cien años de soledad' fue escrita por Gabriel García Márquez en 1967.
+Estadística,Medidas de Tendencia,"¿Cuál es la media aritmética de 4, 8, 12 y 16?",8,10,12,40,B,Baja,Media = (4+8+12+16)/4 = 40/4 = 10.
+Estadística,Medidas de Tendencia,"¿Cuál es la mediana de 3, 7, 9, 15 y 21?",7,9,12,15,B,Baja,"La mediana es el valor central en una lista ordenada: con 5 valores, el tercero (9)."
+Estadística,Probabilidad,¿Cuál es la probabilidad de obtener cara al lanzar una moneda?,1/4,1/3,1/2,1,C,Baja,Una moneda tiene 2 caras igualmente probables: P(cara) = 1/2.
+Estadística,Probabilidad,"Al lanzar un dado, ¿cuál es la probabilidad de obtener un número par?",1/6,1/3,1/2,2/3,C,Media,"Hay 3 números pares (2, 4, 6) de 6 posibles: P = 3/6 = 1/2."
+Física,Cinemática,¿Cuál es la fórmula de la velocidad media?,v = a·t,v = d/t,v = m·a,v = F/m,B,Baja,La velocidad media es la distancia recorrida dividida entre el tiempo: v = d/t.
+Física,Cinemática,Un auto recorre 120 km en 2 horas. ¿Cuál es su velocidad media?,60 km/h,80 km/h,240 km/h,30 km/h,A,Baja,v = d/t = 120 km / 2 h = 60 km/h.
+Física,Cinemática,¿Qué es la aceleración?,La rapidez de un objeto,El cambio de velocidad por unidad de tiempo,La fuerza aplicada a un objeto,La masa por la velocidad,B,Media,La aceleración es la variación de la velocidad con respecto al tiempo: a = Δv/Δt.
+Física,Cinemática,Un objeto parte del reposo con aceleración de 3 m/s². ¿Cuál es su velocidad a los 4 s?,7 m/s,12 m/s,16 m/s,3 m/s,B,Media,v = v₀ + a·t = 0 + 3·4 = 12 m/s.
+Física,Dinámica,¿Cuál es la segunda Ley de Newton?,F = m/a,F = m·a,F = a/m,F = m + a,B,Baja,La segunda ley de Newton establece que la fuerza neta es igual a la masa por la aceleración: F = m·a.
+Física,Dinámica,¿Cuánta fuerza se necesita para acelerar 5 kg a 3 m/s²?,8 N,2 N,15 N,1.67 N,C,Baja,F = m·a = 5 kg × 3 m/s² = 15 N.
+Física,Dinámica,¿Qué establece la tercera Ley de Newton?,F = m·a,Todo cuerpo en reposo tiende a seguir en reposo,A toda acción corresponde una reacción igual y opuesta,La energía no se crea ni se destruye,C,Media,La tercera ley establece que las fuerzas siempre se presentan en pares iguales y opuestos.
+Física,Energía,¿Cuál es la unidad de energía en el Sistema Internacional?,Watt,Newton,Joule,Pascal,C,Baja,El Joule (J) es la unidad de energía en el SI; 1 J = 1 N·m.
+Física,Energía,¿Cuál es la fórmula de la energía cinética?,Ec = m·g·h,Ec = F·d,Ec = ½·m·v²,Ec = m·a,C,Media,"La energía cinética es Ec = ½·m·v², donde m es la masa y v la velocidad."
+Física,Energía,Un objeto de 2 kg se mueve a 3 m/s. ¿Cuál es su energía cinética?,6 J,9 J,12 J,3 J,B,Media,Ec = ½·m·v² = ½·2·3² = ½·2·9 = 9 J.
+Física,Ondas,"¿Cuál es la relación entre velocidad, frecuencia y longitud de onda?",v = f - λ,v = f · λ,v = f / λ,v = λ / f,B,Media,La velocidad de una onda es igual a su frecuencia multiplicada por su longitud de onda: v = f·λ.
+Física,Ondas,¿Cuál es la velocidad aproximada del sonido en el aire?,300 m/s,343 m/s,1500 m/s,3×10⁸ m/s,B,Baja,El sonido viaja aproximadamente a 343 m/s en el aire a 20°C.
+Física,Termodinámica,¿Qué establece el Primer Principio de la Termodinámica?,El calor fluye del frío al caliente,La energía interna de un sistema aislado es constante,La entropía siempre aumenta,El calor es proporcional a la masa,B,Alta,El Primer Principio es la conservación de la energía: ΔU = Q - W.
+Física,Termodinámica,¿Cuál es la unidad de temperatura en el SI?,Celsius,Fahrenheit,Kelvin,Rankine,C,Baja,La unidad oficial de temperatura en el Sistema Internacional es el Kelvin (K).
+Química,Tabla Periódica,¿Cuál es el símbolo del elemento Sodio?,So,Sd,Na,N,C,Baja,"El sodio proviene del latín Natrium, por eso su símbolo es Na."
+Química,Tabla Periódica,¿Cuántos electrones tiene el carbono en su configuración base?,2,4,6,8,C,Baja,"El carbono tiene número atómico 6, por lo tanto tiene 6 electrones."
+Química,Tabla Periódica,¿Qué indica el número atómico de un elemento?,La masa del átomo,El número de neutrones,El número de protones,El número de electrones en la corteza,C,Media,"El número atómico indica cuántos protones tiene el núcleo del átomo, lo que define al elemento."
+Química,Tabla Periódica,¿Qué tienen en común los elementos del mismo grupo (columna) en la tabla periódica?,Igual número de neutrones,Igual número de electrones en total,Igual número de electrones en la última capa,Igual masa atómica,C,Media,Los elementos de un mismo grupo comparten la misma configuración electrónica en la capa de valencia.
+Química,Enlace Químico,¿Qué tipo de enlace se forma entre dos átomos no metálicos?,Iónico,Metálico,Covalente,Por puente de hidrógeno,C,Media,El enlace covalente se forma cuando dos no metales comparten electrones.
+Química,Enlace Químico,¿Qué tipo de enlace se forma entre Na y Cl en la sal común?,Covalente,Metálico,Iónico,Van der Waals,C,Baja,El NaCl se forma por enlace iónico: el Na cede un electrón al Cl.
+Química,Enlace Químico,¿Cuántos electrones comparte cada átomo en un enlace covalente simple?,1,2,3,4,A,Media,"En un enlace covalente simple cada átomo aporta 1 electrón, formando un par compartido."
+Química,Reacciones Químicas,¿Qué indica que una reacción química está balanceada?,Que los productos son más que los reactivos,Que la masa de reactivos es igual a la de productos,Que la temperatura no cambia,Que no se libera energía,B,Media,La ley de conservación de la masa indica que los átomos no se crean ni destruyen en una reacción.
+Química,Reacciones Químicas,¿Cuál de las siguientes es una reacción de síntesis o combinación?,AB → A + B,A + B → AB,AB + CD → AD + CB,AB + C → AC + B,B,Baja,En una reacción de síntesis dos o más reactivos se combinan para formar un solo producto.
+Química,Reacciones Químicas,¿Qué tipo de reacción ocurre cuando el HCl reacciona con NaOH para formar NaCl y H₂O?,Síntesis,Combustión,Neutralización,Descomposición,C,Media,Cuando un ácido reacciona con una base y forman sal y agua se llama reacción de neutralización.
+Química,Ácidos y Bases,"Según Arrhenius, ¿qué es un ácido?",Una sustancia que acepta protones,Una sustancia que libera iones OH⁻,Una sustancia que libera iones H⁺,Una sustancia sin carga,C,Media,"Según Arrhenius, un ácido es una sustancia que en agua libera iones H⁺ (protones)."
+Química,Ácidos y Bases,¿Cuál es el pH del agua pura a 25°C?,0,7,14,5,B,Baja,El agua pura es neutra y tiene un pH de 7 a 25°C.
+Química,Ácidos y Bases,¿Qué indica un pH menor a 7?,La solución es básica,La solución es neutra,La solución es ácida,La solución es saturada,C,Baja,El pH menor a 7 indica acidez; mayor a 7 indica basicidad; igual a 7 es neutro.
+Química,Ácidos y Bases,¿Qué color toma el papel tornasol en presencia de un ácido?,Azul,Verde,Rojo,Amarillo,C,Baja,El papel tornasol se torna rojo en medios ácidos y azul en medios básicos.
+Química,Estequiometría,¿Qué es un mol en química?,Una unidad de masa,6.022×10²³ partículas de una sustancia,La masa molecular de un compuesto,La cantidad de neutrones de un elemento,B,Media,El mol es la unidad de cantidad de sustancia; 1 mol contiene 6.022×10²³ partículas (número de Avogadro).
+Química,Estequiometría,¿Cuántos gramos hay en 1 mol de agua (H₂O)?,16 g,18 g,20 g,2 g,B,Media,Masa molar del agua: H=1×2 + O=16 → 2+16 = 18 g/mol.
