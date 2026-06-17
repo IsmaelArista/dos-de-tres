@@ -24,7 +24,7 @@ import json
 # =============================================================================
 st.set_page_config(
     page_title="Dos de Tres | Plataforma educativa",
-    page_icon="🎯",
+    page_icon="D",
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -162,6 +162,22 @@ def cargar_estilos():
             margin-bottom: 1.5rem;
         }
 
+        /* Avatar del usuario en el sidebar */
+        .avatar-circulo {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #600070 0%, #9C27B0 100%);
+            color: white;
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            box-shadow: 0 4px 10px rgba(96, 0, 112, 0.3);
+        }
+
         /* Ocultar elementos por defecto de Streamlit */
         #MainMenu { visibility: hidden; }
         footer { visibility: hidden; }
@@ -221,7 +237,7 @@ def inicializar_bd():
             titulo TEXT NOT NULL,
             materia TEXT NOT NULL,
             descripcion TEXT,
-            preguntas_ids TEXT NOT NULL, -- JSON con lista de ids
+            preguntas_ids TEXT NOT NULL,
             fecha_creacion TEXT DEFAULT (datetime('now','localtime')),
             activa INTEGER DEFAULT 1,
             FOREIGN KEY (id_docente) REFERENCES usuarios(id)
@@ -253,7 +269,7 @@ def inicializar_bd():
     """)
     conn.commit()
 
-    # Cargar usuarios semilla si la tabla está vacía
+    # Usuarios semilla
     cur.execute("SELECT COUNT(*) as c FROM usuarios")
     if cur.fetchone()["c"] == 0:
         usuarios_semilla = [
@@ -275,10 +291,9 @@ def inicializar_bd():
         )
         conn.commit()
 
-    # Cargar preguntas semilla desde CSV si la tabla está vacía
+    # Preguntas semilla
     cur.execute("SELECT COUNT(*) as c FROM preguntas")
     if cur.fetchone()["c"] == 0 and CSV_PATH.exists():
-        # keep_default_na=False evita que cadenas como "None" o "" se conviertan en NaN
         df = pd.read_csv(CSV_PATH, keep_default_na=False)
         for _, r in df.iterrows():
             cur.execute("""
@@ -290,13 +305,12 @@ def inicializar_bd():
                   r.get("explicacion", "")))
         conn.commit()
 
-    # Crear una evaluación de demostración si no existe ninguna
+    # Evaluaciones de muestra
     cur.execute("SELECT COUNT(*) as c FROM evaluaciones")
     if cur.fetchone()["c"] == 0:
         cur.execute("SELECT id FROM usuarios WHERE rol='docente' LIMIT 1")
         docente = cur.fetchone()
         if docente:
-            # Tomar las primeras 10 preguntas de Matemáticas
             cur.execute("SELECT id FROM preguntas WHERE materia='Matemáticas' LIMIT 10")
             ids = [str(r["id"]) for r in cur.fetchall()]
             if ids:
@@ -317,6 +331,28 @@ def inicializar_bd():
                 """, (docente["id"], "Fundamentos de Programación",
                       "Programación",
                       "Evaluación de conceptos básicos: variables, ciclos, condicionales y funciones.",
+                      json.dumps([int(i) for i in ids])))
+
+            cur.execute("SELECT id FROM preguntas WHERE materia='Física' LIMIT 10")
+            ids = [str(r["id"]) for r in cur.fetchall()]
+            if ids:
+                cur.execute("""
+                    INSERT INTO evaluaciones (id_docente, titulo, materia, descripcion, preguntas_ids)
+                    VALUES (?,?,?,?,?)
+                """, (docente["id"], "Diagnóstico de Física - Unidad 1",
+                      "Física",
+                      "Evaluación inicial de cinemática, dinámica, energía y ondas.",
+                      json.dumps([int(i) for i in ids])))
+
+            cur.execute("SELECT id FROM preguntas WHERE materia='Química' LIMIT 10")
+            ids = [str(r["id"]) for r in cur.fetchall()]
+            if ids:
+                cur.execute("""
+                    INSERT INTO evaluaciones (id_docente, titulo, materia, descripcion, preguntas_ids)
+                    VALUES (?,?,?,?,?)
+                """, (docente["id"], "Diagnóstico de Química - Unidad 1",
+                      "Química",
+                      "Evaluación de tabla periódica, enlace químico, reacciones y ácidos/bases.",
                       json.dumps([int(i) for i in ids])))
 
             conn.commit()
@@ -367,6 +403,14 @@ def badge(texto, tipo="exito"):
     return f'<span class="badge badge-{tipo}">{texto}</span>'
 
 
+def iniciales(nombre: str) -> str:
+    """Devuelve las iniciales (1-2 letras) de un nombre para el avatar."""
+    partes = nombre.strip().split()
+    if len(partes) >= 2:
+        return (partes[0][0] + partes[1][0]).upper()
+    return partes[0][:2].upper() if partes else "U"
+
+
 # =============================================================================
 # PANTALLA DE LOGIN
 # =============================================================================
@@ -375,7 +419,9 @@ def pantalla_login():
     with col2:
         st.markdown(f"""
             <div style="text-align:center; padding: 2rem 0 1rem 0;">
-                <h1 style="color:{COLOR_PRIMARIO}; font-size: 3rem; margin: 0;">🎯 Dos de Tres</h1>
+                <h1 style="color:{COLOR_PRIMARIO}; font-size: 3rem; margin: 0; letter-spacing: -1px;">
+                    Dos de Tres
+                </h1>
                 <p style="color:#666; font-size: 1.1rem; margin-top: 0.5rem;">
                     Plataforma de evaluación efectiva del aprendizaje
                 </p>
@@ -396,15 +442,15 @@ def pantalla_login():
                     st.session_state.user = user
                     st.rerun()
                 else:
-                    st.error("❌ Credenciales incorrectas. Verifica tu correo y contraseña.")
+                    st.error("Credenciales incorrectas. Verifica tu correo y contraseña.")
 
-        with st.expander("🔑 Credenciales de demostración"):
+        with st.expander("Credenciales de demostración"):
             st.markdown("""
             | Rol | Correo | Contraseña |
             |---|---|---|
-            | 👨‍🏫 Docente | `rocio@escom.ipn.mx` | `docente123` |
-            | 👨‍🎓 Estudiante | `ismael@alumno.ipn.mx` | `alumno123` |
-            | ⚙️ Admin | `admin@escom.ipn.mx` | `admin123` |
+            | Docente | `rocio@escom.ipn.mx` | `docente123` |
+            | Estudiante | `ismael@alumno.ipn.mx` | `alumno123` |
+            | Admin | `admin@escom.ipn.mx` | `admin123` |
             """)
 
 
@@ -413,21 +459,19 @@ def pantalla_login():
 # =============================================================================
 def vista_estudiante():
     user = st.session_state.user
-    header(f"Hola, {user['nombre'].split()[0]} 👋",
+    header(f"Hola, {user['nombre'].split()[0]}",
            f"Aquí podrás realizar tus evaluaciones y consultar tu progreso académico.")
 
     conn = get_conn()
 
-    # Sub-navegación dentro del rol estudiante
     seccion = st.sidebar.radio(
-        "📚 Menú",
-        ["🏠 Inicio", "📝 Evaluaciones disponibles", "📊 Mi diagnóstico", "📈 Mi historial"],
+        "Menú",
+        ["Inicio", "Evaluaciones disponibles", "Mi diagnóstico", "Mi historial"],
         label_visibility="collapsed"
     )
 
     # -------- INICIO --------
-    if seccion == "🏠 Inicio":
-        # KPIs del estudiante
+    if seccion == "Inicio":
         completadas = conn.execute(
             "SELECT COUNT(*) as c FROM evaluaciones_completadas WHERE id_estudiante=?",
             (user["id"],)
@@ -450,7 +494,6 @@ def vista_estudiante():
         with c2: kpi(completadas, "Evaluaciones completadas", COLOR_EXITO)
         with c3: kpi(f"{promedio:.0f}%", "Promedio general", COLOR_PRIMARIO)
         with c4:
-            # Temas dominados
             dominados = conn.execute("""
                 SELECT COUNT(DISTINCT p.tema) as c
                 FROM resultados r
@@ -459,7 +502,7 @@ def vista_estudiante():
             """, (user["id"],)).fetchone()["c"]
             kpi(dominados, "Temas trabajados", COLOR_SECUNDARIO)
 
-        st.markdown("### 📌 Próximas acciones recomendadas")
+        st.markdown("### Próximas acciones recomendadas")
         if disponibles > 0:
             st.markdown(f"""
                 <div class="tarjeta tarjeta-warn">
@@ -470,16 +513,15 @@ def vista_estudiante():
         else:
             st.markdown("""
                 <div class="tarjeta tarjeta-exito">
-                    <strong>¡Excelente!</strong> Has completado todas las evaluaciones disponibles.
+                    <strong>Excelente.</strong> Has completado todas las evaluaciones disponibles.
                     Revisa tu diagnóstico para identificar áreas de mejora.
                 </div>
             """, unsafe_allow_html=True)
 
     # -------- EVALUACIONES DISPONIBLES --------
-    elif seccion == "📝 Evaluaciones disponibles":
+    elif seccion == "Evaluaciones disponibles":
         st.markdown("### Evaluaciones por realizar")
 
-        # Si hay una evaluación en curso, mostrar el formulario
         if "evaluacion_actual" in st.session_state:
             realizar_evaluacion(conn)
             return
@@ -495,15 +537,15 @@ def vista_estudiante():
         """, (user["id"],)).fetchall()
 
         if not evals:
-            st.info("🎉 No tienes evaluaciones pendientes en este momento.")
+            st.info("No tienes evaluaciones pendientes en este momento.")
         else:
             for e in evals:
                 ids = json.loads(e["preguntas_ids"])
                 with st.container(border=True):
                     c1, c2 = st.columns([3, 1])
                     with c1:
-                        st.markdown(f"#### 📋 {e['titulo']}")
-                        st.caption(f"📚 {e['materia']}  ·  👨‍🏫 {e['docente']}  ·  📝 {len(ids)} preguntas")
+                        st.markdown(f"#### {e['titulo']}")
+                        st.caption(f"{e['materia']}  ·  {e['docente']}  ·  {len(ids)} preguntas")
                         st.write(e["descripcion"] or "")
                     with c2:
                         if st.button("Comenzar", key=f"start_{e['id']}", use_container_width=True):
@@ -517,8 +559,8 @@ def vista_estudiante():
                             st.rerun()
 
     # -------- DIAGNÓSTICO --------
-    elif seccion == "📊 Mi diagnóstico":
-        st.markdown("### 🎯 Diagnóstico personalizado")
+    elif seccion == "Mi diagnóstico":
+        st.markdown("### Diagnóstico personalizado")
         st.caption("Identificación de tus fortalezas y áreas de oportunidad por tema.")
 
         df = pd.read_sql("""
@@ -540,18 +582,17 @@ def vista_estudiante():
                 lambda x: "Dominado" if x >= 80 else ("En proceso" if x >= 50 else "Requiere refuerzo")
             )
 
-            # Resumen visual
             c1, c2, c3 = st.columns(3)
-            with c1: kpi(int((df["estado"]=="Dominado").sum()),       "Temas dominados",     COLOR_EXITO)
-            with c2: kpi(int((df["estado"]=="En proceso").sum()),     "En proceso",          COLOR_ADVERTENCIA)
-            with c3: kpi(int((df["estado"]=="Requiere refuerzo").sum()), "Requieren refuerzo", COLOR_PELIGRO)
+            with c1: kpi(int((df["estado"]=="Dominado").sum()),          "Temas dominados",     COLOR_EXITO)
+            with c2: kpi(int((df["estado"]=="En proceso").sum()),         "En proceso",          COLOR_ADVERTENCIA)
+            with c3: kpi(int((df["estado"]=="Requiere refuerzo").sum()),  "Requieren refuerzo",  COLOR_PELIGRO)
 
             st.markdown("#### Desempeño por tema")
             fig = px.bar(
                 df.sort_values("dominio_pct"),
                 x="dominio_pct", y="tema", color="materia",
                 orientation="h",
-                color_discrete_sequence=[COLOR_PRIMARIO, COLOR_SECUNDARIO, "#E91E63", "#FF9800"],
+                color_discrete_sequence=[COLOR_PRIMARIO, COLOR_SECUNDARIO, "#E91E63", "#FF9800", "#00ACC1"],
                 labels={"dominio_pct": "% de dominio", "tema": "Tema"},
                 text=df.sort_values("dominio_pct")["dominio_pct"].astype(str) + "%"
             )
@@ -564,16 +605,15 @@ def vista_estudiante():
             fig.update_traces(textposition="outside")
             st.plotly_chart(fig, use_container_width=True)
 
-            # Recomendaciones específicas
-            st.markdown("#### 💡 Recomendaciones para reforzar")
+            st.markdown("#### Recomendaciones para reforzar")
             criticos = df[df["estado"]=="Requiere refuerzo"]
             if criticos.empty:
-                st.success("¡Buen trabajo! No tienes temas en estado crítico.")
+                st.success("Buen trabajo. No tienes temas en estado crítico.")
             else:
                 for _, row in criticos.iterrows():
                     st.markdown(f"""
                         <div class="tarjeta tarjeta-rojo">
-                            <strong>📕 {row['tema']}</strong> ({row['materia']})<br>
+                            <strong>{row['tema']}</strong> ({row['materia']})<br>
                             Dominio actual: <strong>{row['dominio_pct']:.0f}%</strong>
                             ({row['aciertos']} de {row['intentos']} respuestas correctas)<br>
                             <em>Recomendación: dedica tiempo extra a este tema antes de avanzar a contenidos relacionados.</em>
@@ -581,8 +621,8 @@ def vista_estudiante():
                     """, unsafe_allow_html=True)
 
     # -------- HISTORIAL --------
-    elif seccion == "📈 Mi historial":
-        st.markdown("### 📜 Historial de evaluaciones")
+    elif seccion == "Mi historial":
+        st.markdown("### Historial de evaluaciones")
 
         hist = pd.read_sql("""
             SELECT ec.fecha, e.titulo, e.materia, ec.puntaje, ec.aciertos, ec.total_preguntas
@@ -602,17 +642,16 @@ def vista_estudiante():
             st.dataframe(
                 hist[["fecha", "titulo", "materia", "resultado", "puntaje"]],
                 column_config={
-                    "fecha":    "Fecha",
-                    "titulo":   "Evaluación",
-                    "materia":  "Materia",
-                    "resultado":"Resultado",
-                    "puntaje":  "Calificación",
+                    "fecha":     "Fecha",
+                    "titulo":    "Evaluación",
+                    "materia":   "Materia",
+                    "resultado": "Resultado",
+                    "puntaje":   "Calificación",
                 },
                 hide_index=True,
                 use_container_width=True
             )
 
-            # Evolución del aprendizaje
             if len(hist) > 1:
                 st.markdown("#### Evolución de tu puntaje")
                 hist_g = hist.copy()
@@ -636,16 +675,13 @@ def realizar_evaluacion(conn):
     total = len(ev["preguntas_ids"])
     idx = ev["pregunta_actual"]
 
-    # Barra de progreso
     progreso = (idx) / total
     st.progress(progreso, text=f"Pregunta {idx+1} de {total}")
 
     if idx >= total:
-        # Calcular resultado
         aciertos = sum(1 for v in ev["respuestas"].values() if v["es_correcta"])
         puntaje = (aciertos / total) * 100
 
-        # Guardar en BD
         conn.execute("""
             INSERT OR REPLACE INTO evaluaciones_completadas
             (id_evaluacion, id_estudiante, puntaje, total_preguntas, aciertos)
@@ -660,11 +696,10 @@ def realizar_evaluacion(conn):
 
         conn.commit()
 
-        # Pantalla de resultados
         st.balloons()
         st.markdown(f"""
             <div class="tarjeta tarjeta-exito" style="text-align:center; padding:2rem;">
-                <h2 style="color:#2E7D32; margin-top:0;">✅ Evaluación completada</h2>
+                <h2 style="color:#2E7D32; margin-top:0;">Evaluación completada</h2>
                 <h1 style="font-size:3rem; color:#600070; margin: 1rem 0;">{puntaje:.0f}%</h1>
                 <p>Respondiste correctamente <strong>{aciertos} de {total}</strong> preguntas.</p>
             </div>
@@ -675,7 +710,6 @@ def realizar_evaluacion(conn):
             st.rerun()
         return
 
-    # Mostrar pregunta actual
     pid = ev["preguntas_ids"][idx]
     p = conn.execute("SELECT * FROM preguntas WHERE id=?", (pid,)).fetchone()
 
@@ -705,11 +739,11 @@ def realizar_evaluacion(conn):
 
     col1, col2 = st.columns([1, 1])
     with col1:
-        if st.button("⬅️ Cancelar evaluación", use_container_width=True):
+        if st.button("Cancelar evaluación", use_container_width=True):
             del st.session_state.evaluacion_actual
             st.rerun()
     with col2:
-        if st.button("Siguiente ➡️", use_container_width=True, type="primary", disabled=(seleccion is None)):
+        if st.button("Siguiente", use_container_width=True, type="primary", disabled=(seleccion is None)):
             ev["respuestas"][pid] = {
                 "respuesta": seleccion,
                 "es_correcta": seleccion == p["respuesta_correcta"]
@@ -723,32 +757,31 @@ def realizar_evaluacion(conn):
 # =============================================================================
 def vista_docente():
     user = st.session_state.user
-    header(f"Panel docente",
+    header("Panel docente",
            f"Bienvenido/a, {user['nombre']}. Gestiona tus evaluaciones y consulta el progreso de tu grupo.")
 
     conn = get_conn()
 
     seccion = st.sidebar.radio(
-        "👨‍🏫 Menú",
-        ["📊 Dashboard del grupo", "📝 Mis evaluaciones", "➕ Crear evaluación", "🎯 Análisis por tema"],
+        "Menú",
+        ["Dashboard del grupo", "Mis evaluaciones", "Crear evaluación", "Análisis por tema"],
         label_visibility="collapsed"
     )
 
     # -------- DASHBOARD DEL GRUPO --------
-    if seccion == "📊 Dashboard del grupo":
-        # KPIs generales
-        total_alumnos = conn.execute("SELECT COUNT(*) as c FROM usuarios WHERE rol='estudiante'").fetchone()["c"]
-        total_evals   = conn.execute("SELECT COUNT(*) as c FROM evaluaciones WHERE id_docente=?", (user["id"],)).fetchone()["c"]
+    if seccion == "Dashboard del grupo":
+        total_alumnos    = conn.execute("SELECT COUNT(*) as c FROM usuarios WHERE rol='estudiante'").fetchone()["c"]
+        total_evals      = conn.execute("SELECT COUNT(*) as c FROM evaluaciones WHERE id_docente=?", (user["id"],)).fetchone()["c"]
         total_respuestas = conn.execute("SELECT COUNT(*) as c FROM resultados").fetchone()["c"]
-        promedio_grupo = conn.execute("SELECT AVG(puntaje) as p FROM evaluaciones_completadas").fetchone()["p"] or 0
+        promedio_grupo   = conn.execute("SELECT AVG(puntaje) as p FROM evaluaciones_completadas").fetchone()["p"] or 0
 
         c1, c2, c3, c4 = st.columns(4)
-        with c1: kpi(total_alumnos, "Estudiantes activos")
-        with c2: kpi(total_evals, "Evaluaciones creadas", COLOR_SECUNDARIO)
+        with c1: kpi(total_alumnos,    "Estudiantes activos")
+        with c2: kpi(total_evals,      "Evaluaciones creadas",   COLOR_SECUNDARIO)
         with c3: kpi(total_respuestas, "Respuestas registradas", COLOR_ADVERTENCIA)
         with c4: kpi(f"{promedio_grupo:.0f}%", "Promedio del grupo", COLOR_EXITO)
 
-        st.markdown("### 📈 Desempeño general por estudiante")
+        st.markdown("### Desempeño general por estudiante")
 
         df_alumnos = pd.read_sql("""
             SELECT u.id, u.nombre,
@@ -765,7 +798,7 @@ def vista_docente():
             st.info("Los estudiantes aún no han completado evaluaciones.")
         else:
             df_alumnos["estado"] = df_alumnos["promedio"].apply(
-                lambda x: "🟢 Excelente" if x >= 80 else ("🟡 Regular" if x >= 60 else "🔴 En riesgo")
+                lambda x: "Excelente" if x >= 80 else ("Regular" if x >= 60 else "En riesgo")
             )
             df_alumnos["promedio_pct"] = df_alumnos["promedio"].round(0).astype(int).astype(str) + "%"
 
@@ -781,8 +814,7 @@ def vista_docente():
                 use_container_width=True
             )
 
-            # Distribución de calificaciones
-            st.markdown("### 📊 Distribución de calificaciones del grupo")
+            st.markdown("### Distribución de calificaciones del grupo")
             df_dist = df_alumnos[df_alumnos["evaluaciones"] > 0]
             if not df_dist.empty:
                 fig = px.histogram(df_dist, x="promedio", nbins=10,
@@ -793,7 +825,7 @@ def vista_docente():
                 st.plotly_chart(fig, use_container_width=True)
 
     # -------- MIS EVALUACIONES --------
-    elif seccion == "📝 Mis evaluaciones":
+    elif seccion == "Mis evaluaciones":
         st.markdown("### Mis evaluaciones creadas")
 
         evals = conn.execute("""
@@ -814,7 +846,7 @@ def vista_docente():
                     c1, c2, c3 = st.columns([3, 1, 1])
                     with c1:
                         st.markdown(f"#### {e['titulo']}")
-                        st.caption(f"📚 {e['materia']}  ·  📝 {len(ids)} preguntas  ·  📅 {e['fecha_creacion'][:10]}")
+                        st.caption(f"{e['materia']}  ·  {len(ids)} preguntas  ·  {e['fecha_creacion'][:10]}")
                         st.write(e["descripcion"] or "")
                     with c2:
                         kpi(e["completadas"], "Completadas", COLOR_PRIMARIO)
@@ -823,7 +855,7 @@ def vista_docente():
                         kpi(f"{prom:.0f}%", "Promedio", COLOR_EXITO)
 
     # -------- CREAR EVALUACIÓN --------
-    elif seccion == "➕ Crear evaluación":
+    elif seccion == "Crear evaluación":
         st.markdown("### Crear nueva evaluación")
 
         with st.form("nueva_eval", clear_on_submit=True):
@@ -834,7 +866,6 @@ def vista_docente():
             materia = st.selectbox("Materia *", materias)
             descripcion = st.text_area("Descripción", placeholder="Breve descripción del propósito de la evaluación")
 
-            # Mostrar preguntas disponibles
             preguntas_disp = conn.execute(
                 "SELECT * FROM preguntas WHERE materia=? ORDER BY tema, dificultad",
                 (materia,)
@@ -851,7 +882,7 @@ def vista_docente():
                 ):
                     seleccionadas.append(p["id"])
 
-            submit = st.form_submit_button("✅ Crear evaluación", type="primary", use_container_width=True)
+            submit = st.form_submit_button("Crear evaluación", type="primary", use_container_width=True)
 
             if submit:
                 if not titulo:
@@ -864,10 +895,10 @@ def vista_docente():
                         VALUES (?,?,?,?,?)
                     """, (user["id"], titulo, materia, descripcion, json.dumps(seleccionadas)))
                     conn.commit()
-                    st.success(f"✅ Evaluación '{titulo}' creada con {len(seleccionadas)} preguntas.")
+                    st.success(f"Evaluación '{titulo}' creada con {len(seleccionadas)} preguntas.")
 
     # -------- ANÁLISIS POR TEMA --------
-    elif seccion == "🎯 Análisis por tema":
+    elif seccion == "Análisis por tema":
         st.markdown("### Identificación de vacíos de aprendizaje del grupo")
         st.caption("Detecta qué temas presentan mayores dificultades a nivel grupal.")
 
@@ -886,10 +917,9 @@ def vista_docente():
         else:
             df["dominio_grupal"] = (df["aciertos"] / df["total_respuestas"] * 100).round(0)
             df["estado"] = df["dominio_grupal"].apply(
-                lambda x: "✅ Dominado" if x >= 75 else ("⚠️ En proceso" if x >= 50 else "🚨 Vacío crítico")
+                lambda x: "Dominado" if x >= 75 else ("En proceso" if x >= 50 else "Vacío crítico")
             )
 
-            # Heatmap visual
             df_sorted = df.sort_values("dominio_grupal")
             fig = go.Figure(go.Bar(
                 x=df_sorted["dominio_grupal"],
@@ -914,10 +944,9 @@ def vista_docente():
             )
             st.plotly_chart(fig, use_container_width=True)
 
-            # Alertas
             criticos = df[df["dominio_grupal"] < 50]
             if not criticos.empty:
-                st.markdown("### 🚨 Temas que requieren intervención inmediata")
+                st.markdown("### Temas que requieren intervención inmediata")
                 for _, row in criticos.iterrows():
                     st.markdown(f"""
                         <div class="tarjeta tarjeta-rojo">
@@ -942,12 +971,12 @@ def vista_admin():
     conn = get_conn()
 
     seccion = st.sidebar.radio(
-        "⚙️ Menú",
-        ["📊 Resumen del sistema", "👥 Gestión de usuarios", "📚 Banco de preguntas"],
+        "Menú",
+        ["Resumen del sistema", "Gestión de usuarios", "Banco de preguntas"],
         label_visibility="collapsed"
     )
 
-    if seccion == "📊 Resumen del sistema":
+    if seccion == "Resumen del sistema":
         c1, c2, c3, c4 = st.columns(4)
         with c1:
             n = conn.execute("SELECT COUNT(*) as c FROM usuarios").fetchone()["c"]
@@ -962,8 +991,7 @@ def vista_admin():
             n = conn.execute("SELECT COUNT(*) as c FROM resultados").fetchone()["c"]
             kpi(n, "Respuestas registradas", COLOR_EXITO)
 
-        # Distribución por rol
-        st.markdown("### 👥 Distribución de usuarios por rol")
+        st.markdown("### Distribución de usuarios por rol")
         df_roles = pd.read_sql("""
             SELECT rol, COUNT(*) as cantidad FROM usuarios GROUP BY rol
         """, conn)
@@ -972,8 +1000,7 @@ def vista_admin():
         fig.update_traces(textinfo="label+percent", textfont_size=14)
         st.plotly_chart(fig, use_container_width=True)
 
-        # Distribución por materia
-        st.markdown("### 📚 Preguntas por materia")
+        st.markdown("### Preguntas por materia")
         df_mat = pd.read_sql("""
             SELECT materia, COUNT(*) as cantidad FROM preguntas GROUP BY materia
         """, conn)
@@ -982,7 +1009,7 @@ def vista_admin():
         fig.update_layout(plot_bgcolor="white", yaxis=dict(gridcolor="#EEE"))
         st.plotly_chart(fig, use_container_width=True)
 
-    elif seccion == "👥 Gestión de usuarios":
+    elif seccion == "Gestión de usuarios":
         st.markdown("### Usuarios del sistema")
 
         df = pd.read_sql("""
@@ -991,7 +1018,7 @@ def vista_admin():
         """, conn)
         st.dataframe(df, hide_index=True, use_container_width=True)
 
-        st.markdown("### ➕ Registrar nuevo usuario")
+        st.markdown("### Registrar nuevo usuario")
         with st.form("nuevo_usuario", clear_on_submit=True):
             c1, c2 = st.columns(2)
             with c1:
@@ -1017,7 +1044,7 @@ def vista_admin():
                     except sqlite3.IntegrityError:
                         st.error("Ese correo ya está registrado.")
 
-    elif seccion == "📚 Banco de preguntas":
+    elif seccion == "Banco de preguntas":
         st.markdown("### Banco de preguntas")
 
         df = pd.read_sql("""
@@ -1025,7 +1052,6 @@ def vista_admin():
             FROM preguntas ORDER BY materia, tema
         """, conn)
 
-        # Filtros
         c1, c2 = st.columns(2)
         with c1:
             materias = ["Todas"] + sorted(df["materia"].unique().tolist())
@@ -1058,19 +1084,18 @@ def main():
 
     user = st.session_state.user
 
-    # Barra lateral con info del usuario
+    # Barra lateral con info del usuario (avatar con iniciales)
     with st.sidebar:
         st.markdown(f"""
             <div style="text-align:center; padding:1rem 0; border-bottom: 1px solid #DDD; margin-bottom: 1rem;">
-                <div style="font-size:3rem;">{'👨‍🏫' if user['rol']=='docente' else '👨‍🎓' if user['rol']=='estudiante' else '⚙️'}</div>
-                <div style="font-weight:600; color:#600070; margin-top:0.5rem;">{user['nombre']}</div>
+                <div class="avatar-circulo">{iniciales(user['nombre'])}</div>
+                <div style="font-weight:600; color:#600070; margin-top:0.75rem;">{user['nombre']}</div>
                 <div style="font-size:0.85rem; color:#666; text-transform:capitalize;">
                     {user['rol']} {'· ' + user['grupo'] if user.get('grupo') else ''}
                 </div>
             </div>
         """, unsafe_allow_html=True)
 
-    # Enrutamiento por rol
     if user["rol"] == "estudiante":
         vista_estudiante()
     elif user["rol"] == "docente":
@@ -1078,10 +1103,9 @@ def main():
     elif user["rol"] == "admin":
         vista_admin()
 
-    # Botón de logout al final del sidebar
     with st.sidebar:
         st.markdown("---")
-        if st.button("🚪 Cerrar sesión", use_container_width=True):
+        if st.button("Cerrar sesión", use_container_width=True):
             logout()
             st.rerun()
         st.caption("Dos de Tres · ESCOM-IPN · 2026")
